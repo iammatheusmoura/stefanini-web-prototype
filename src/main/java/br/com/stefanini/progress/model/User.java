@@ -138,7 +138,7 @@ public class User {
 		}
 	}
 
-	public Boolean getActive() {
+	public Boolean isActive() {
 		return active;
 	}
 
@@ -154,14 +154,6 @@ public class User {
 		this.email = email;
 	}
 
-//	public Profile getIdProfile() {
-//		return idProfile;
-//	}
-//
-//	public void setIdProfile(Profile idProfile) {
-//		this.idProfile = idProfile;
-//	}
-
 	public Set<Role> getRoles() {
 		return roles;
 	}
@@ -169,13 +161,5 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-
-//	public Set<Project> getProject() {
-//		return project;
-//	}
-//
-//	public void setProject(Set<Project> project) {
-//		this.project = project;
-//	}
 
 }

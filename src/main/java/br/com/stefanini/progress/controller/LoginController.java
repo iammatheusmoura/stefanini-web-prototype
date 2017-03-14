@@ -28,7 +28,7 @@ public class LoginController {
 	public ModelAndView home(){
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findLoginByUsername(auth.getName());
+		User user = userService.findUserByUsername(auth.getName());
 		modelAndView.setViewName("progress/index");
 		return modelAndView;
 	}

@@ -1,15 +1,14 @@
 package br.com.stefanini.progress.configuration;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -18,21 +17,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{	
 
 	@Autowired
-	private DataSource dataSource;
+	private BCryptPasswordEncoder bCryptPasswordEncoder; //referência do codificador da senha que está sendo implementado na WebMvcConfig.java
 	
-	@Value("${spring.queries.login-query}")
-	private String loginQuery;
-	
-	@Value("${spring.queries.profile-query}")
-	private String rolesQuery;
+	@Autowired
+	private UserDetailsService userDetailsService;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth)	throws Exception{
-		auth.
-			jdbcAuthentication()
-				.usersByUsernameQuery(loginQuery)
-				.authoritiesByUsernameQuery(rolesQuery)
-				.dataSource(dataSource);		
+		auth
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(bCryptPasswordEncoder);
 	}
 	
 	@Override
@@ -47,9 +41,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 					.hasAuthority("ADMIN").anyRequest()
 					.authenticated().and().csrf().disable().formLogin()
 						.loginPage("/login").failureUrl("/login?error=true")
+						.defaultSuccessUrl("/progress/index")
 						.usernameParameter("username")
 						.passwordParameter("password")
-				.defaultSuccessUrl("/progress/index")
 				.and().logout()
 					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.logoutSuccessUrl("/").and().exceptionHandling();
@@ -62,5 +56,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	       .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
 	}
 	
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		return bCryptPasswordEncoder;
+	}
 	
 }
