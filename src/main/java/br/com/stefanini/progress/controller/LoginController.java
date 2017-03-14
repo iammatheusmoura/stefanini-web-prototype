@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.stefanini.progress.model.Login;
+import br.com.stefanini.progress.model.User;
 import br.com.stefanini.progress.service.UserService;
 
 @Controller
@@ -28,7 +28,7 @@ public class LoginController {
 	public ModelAndView home(){
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Login login = userService.findLoginByUsername(auth.getName());
+		User user = userService.findLoginByUsername(auth.getName());
 		modelAndView.setViewName("progress/index");
 		return modelAndView;
 	}

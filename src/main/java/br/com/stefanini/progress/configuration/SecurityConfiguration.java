@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -23,36 +24,35 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	private String loginQuery;
 	
 	@Value("${spring.queries.profile-query}")
-	private String profileQuery;
+	private String rolesQuery;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth)	throws Exception{
 		auth.
 			jdbcAuthentication()
 				.usersByUsernameQuery(loginQuery)
-				.authoritiesByUsernameQuery(profileQuery)
-				.dataSource(dataSource);
-		
+				.authoritiesByUsernameQuery(rolesQuery)
+				.dataSource(dataSource);		
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
 		http.
 			authorizeRequests()
 				.antMatchers("/").permitAll()
 				.antMatchers("/login").permitAll()
 				.antMatchers("/register").permitAll()
 				.antMatchers("/forgotPassword").permitAll()
-				.antMatchers("/progress/**").hasAuthority("ADM").anyRequest()
-				.authenticated().and().csrf().disable().formLogin()
-				.loginPage("/login").failureUrl("/login?error=true")
+				.antMatchers("/progress/**")
+					.hasAuthority("ADMIN").anyRequest()
+					.authenticated().and().csrf().disable().formLogin()
+						.loginPage("/login").failureUrl("/login?error=true")
+						.usernameParameter("username")
+						.passwordParameter("password")
 				.defaultSuccessUrl("/progress/index")
-				.usernameParameter("user")
-				.passwordParameter("password")
 				.and().logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/").and().exceptionHandling();
+					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessUrl("/").and().exceptionHandling();
 	}
 
 	@Override
@@ -61,4 +61,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	       .ignoring()
 	       .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
 	}
+	
+	
 }

@@ -1,7 +1,5 @@
 package br.com.stefanini.progress.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,11 +9,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tb_dom_project")
-public class Project implements Serializable {
+public class Project {
 	
-	
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "cd_id_project")

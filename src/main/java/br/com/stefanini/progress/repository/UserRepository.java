@@ -5,7 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import br.com.stefanini.progress.model.User;
 
-@Repository("userRepository")
+@Repository("userNameRepository")
 public interface UserRepository extends JpaRepository<User, Long>{	
-//	User findByUsername(String username);
+	User findByCpf(String cpf);
+	User findByUsername(String username);
 }
